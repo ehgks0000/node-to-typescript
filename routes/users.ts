@@ -1,13 +1,12 @@
 import express, {Request, Response, NextFunction} from 'express';
+import {getUsers} from "../controllers/users";
+
 const router = express.Router();
 
 
 router
     .route("/")
-    .get((req:Request, res:Response, next:NextFunction) => {
-        console.log("connect users router")
-        res.send("Hello users router!");
-});
+    .get(getUsers);
 // router.route("/").get(getUsers);
 
 export = router;

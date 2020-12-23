@@ -1,7 +1,10 @@
 import express, {Request, Response, NextFunction} from 'express';
 
 
-exports.getUsers = (req: Request, res:Response)=>{
+const getUsers = (req: Request, res:Response, next:NextFunction)=>{
 
-    const body = req.body;
+    console.log("connect users router")
+    res.send("Hello users router!");
 }
+
+export  {getUsers};
