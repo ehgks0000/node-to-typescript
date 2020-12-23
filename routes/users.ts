@@ -5,7 +5,8 @@ const router = express.Router();
 router
     .route("/")
     .get((req:Request, res:Response, next:NextFunction) => {
-        res.send("hello users router");
+        console.log("connect users router")
+        res.send("Hello users router!");
 });
 // router.route("/").get(getUsers);
 

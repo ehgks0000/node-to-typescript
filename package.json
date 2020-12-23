@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon app.ts",
     "prestart": "tsc",
-    "start": "cross-env NODE_ENV=production PORT=8000 ts-node dist/app.js"
+    "start": "cross-env NODE_ENV=production PORT=8000 pm2 start dist/app.js"
   },
   "author": "",
   "license": "ISC",
