@@ -6,7 +6,7 @@ import {Strategy as kakao} from "passport-kakao";
 // const kakao = require("passport-kakao").Strategy;
 
 
-import User from'../models/users';
+import {User, IUser} from'../models/users';
 
 module.exports = () => {
 

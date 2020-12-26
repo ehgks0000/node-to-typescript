@@ -2,6 +2,8 @@ import "dotenv/config";
 import cors = require("cors");
 import express, {Application,Request, Response, NextFunction} from 'express';
 import {json, urlencoded} from "body-parser";
+import helmet from "helmet";
+
 import connectDB from "./db";
 connectDB();
 import passport from "passport";
@@ -12,6 +14,7 @@ import userRouter from "./routes/users";
 const port = process.env.NODE_ENV === "production" ? process.env.PORT : 8000;
 
 const app:Application = express();
+app.use(helmet());
 app.use(cors());
 app.use(urlencoded({extended: true}));
 app.use(json());

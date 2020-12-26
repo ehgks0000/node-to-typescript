@@ -3,7 +3,6 @@ import passport from'passport';
 import {getUsers} from "../controllers/users";
 
 const router = express.Router();
-const ClientUrl = "localhost:8000";
 
 
 router
@@ -17,11 +16,16 @@ router.route('/auth/google/callback').get(
   passport.authenticate('google', {
     failureRedirect: "/",
   }),
-  async (req:Request, res:Response) => {
+  async (req:any, res:Response) => {
     const user = req.user;
     try {
+        const expiresTime = '1h'; // 1시간 후 토큰 만료로 자동 로그아웃?
+      const userToken = await user.generateToken(
+        process.env.JWT_SECRET_KEY,
+        expiresTime,
+      );
       
-      return res.redirect("/");
+      return res.cookie("x_auth",userToken).redirect("/");
     
     } catch (err) {
       res.json({ loginSuccess: false, err: '토큰 오류' });
