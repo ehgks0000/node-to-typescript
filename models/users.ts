@@ -2,6 +2,9 @@ import mongoose from "mongoose";
 export interface IUser extends mongoose.Document {
     email: string;
     name: string;
+    googleId: string;
+    naverId: string;
+    kakaoId: string;
 }
 
 const userSchema = new mongoose.Schema({
@@ -24,6 +27,9 @@ const userSchema = new mongoose.Schema({
         type: String,
     },
     naverId: {
+        type: String,
+    },
+    kakaoId: {
         type: String,
     },
 
