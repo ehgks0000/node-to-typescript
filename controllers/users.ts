@@ -12,5 +12,13 @@ const getUsers =async (req: Request, res:Response, next:NextFunction)=>{
         return res.json({message:err})
     }
 }
+const me = (req:Request, res:Response) => {
+    if (!req.user) {
+      return res.json({ message: '유저가 없음' });
+    }
+    const user = req.user;
+  
+    return res.json(user);
+  };
 
-export  {getUsers};
+export  {getUsers, me};

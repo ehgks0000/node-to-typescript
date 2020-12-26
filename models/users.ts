@@ -1,5 +1,6 @@
 import mongoose, {Schema, Document, model, Model} from "mongoose";
 import jwt from "jsonwebtoken";
+
 interface IUser {
     email: string;
     name: string;
@@ -15,7 +16,7 @@ interface IUserDoc extends IUser, Document{
 
 }
 interface IUserModel extends Model<IUserDoc>{
-    findByToken(token:string, secret_key:string) : Promise<void>
+    findByToken(token:string, secret_key:any) : Promise<void>
 }
 
 const userSchema :Schema = new Schema({
@@ -69,9 +70,9 @@ userSchema.methods.generateToken = async function (secret_key:string, expiresTim
     return token;
   };
   // statics와 methods의 차이 전자는 모델 자체를 가리키고 후자는 데이터를 가리킨다
-  userSchema.statics.findByToken = function (token:string, secret_key:string) :void {
+  userSchema.statics.findByToken = function (token:string, secret_key:any) :void {
     const user = this;
-    return jwt.verify(token, secret_key, function (err, decoded :Object|undefined) {
+    return jwt.verify(token, secret_key, function (err:any, decoded :any) {
       return user
         .findOne({ _id: decoded, 'tokens.token': token })
         .then((user:IUser) => user)
@@ -79,6 +80,6 @@ userSchema.methods.generateToken = async function (secret_key:string, expiresTim
     });
   };
 
-const User:IUserModel = model<IUserDoc, IUserModel>("User", userSchema);
+const User = model<IUserDoc, IUserModel>("User", userSchema);
 // export default mongoose.model('User', userSchema);
 export {User, IUser};

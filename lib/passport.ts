@@ -1,4 +1,4 @@
-import {Request} from "express";
+import {Request,Response} from "express";
 import passport from'passport';
 import google from'passport-google-oauth20';
 import naver, { Profile } from "passport-naver";
@@ -80,15 +80,17 @@ module.exports = () => {
       function (request:Request, accessToken: string, refreshToken:string, profile: google.Profile, done: (error: any, user?: any) => void) {
           // console.log('accessToken : ', accessToken);
           
-        process.nextTick(() => {
+        process.nextTick( () => {
           const { sub:googleId, name, email } = profile._json;
         //   console.log('profile.json : ', profile);
-          User.findOne({ email }).then((user:any) => {
+        User.findOne({ email }).then((user:any) => {
+
             if (user) {
               user.googleId = googleId;
-              user.save();
-              done(null, user);
-              return ;
+              user.save().then(()=>{
+                done(null, user);
+                return ;
+              });
             } else {
               
               const user = new User({
@@ -97,7 +99,7 @@ module.exports = () => {
                 googleId,
               });
               user.save().then((user:any) => {
-                done(null, user);
+                return done(null, user);
               });
             }
           });
@@ -118,7 +120,7 @@ module.exports = () => {
         process.nextTick( function () {
           
             const { id:naverId, nickname:name, email } = profile._json;
-            console.log(profile);
+            // console.log(profile);
           User.findOne({ email }).then(user => {
             if (user) {
                 user.naverId = naverId;
