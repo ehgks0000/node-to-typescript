@@ -1,23 +1,25 @@
-import mongoose, {Schema, Document, model, Model} from "mongoose";
+import mongoose, {Schema, Document, model, Model, Types} from "mongoose";
 import jwt from "jsonwebtoken";
+type ID = Types.ObjectId;
 
 interface IUser {
     email: string;
     name: string;
-    googleId: string;
-    naverId: string;
-    kakaoId: string;
-    tokens: [string];
+    googleId?: string;
+    naverId?: string;
+    kakaoId?: string;
+    tokens?: [string];
 
 }
 
-interface IUserDoc extends IUser, Document{
-    generateToken(secret_key:string, expiresTime:string): Promise<string>
-
+interface IUserDoc extends IUser, Document{ // methods
+    generateToken : (secret_key:string, expiresTime:string)=> Promise<string>
 }
-interface IUserModel extends Model<IUserDoc>{
-    findByToken(token:string, secret_key:any) : Promise<void>
+interface IUserModel extends Model<IUserDoc>{ // statics
+    findByToken : (token:string, secret_key:any) => Promise<void>
 }
+// generateToken(secret_key:string, expiresTime:string): Promise<string>
+// findByToken(token:string, secret_key:any) : Promise<void>
 
 const userSchema :Schema = new Schema({
     email:{
@@ -52,9 +54,13 @@ const userSchema :Schema = new Schema({
             }
         }
     ]
-
-
 });
+
+userSchema.virtual('memos', {
+    ref: 'Memo',
+    localField: '_id',
+    foreignField: 'userId',
+  });
 
 
 userSchema.methods.generateToken = async function (secret_key:string, expiresTime:string) : Promise<string>{

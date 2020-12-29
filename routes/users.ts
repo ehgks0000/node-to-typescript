@@ -1,6 +1,6 @@
 import express, {Request, Response, NextFunction, request} from 'express';
 import passport from'passport';
-import {getUsers, me} from "../controllers/users";
+import {getUsers, me, logout} from "../controllers/users";
 import auth from "../middleware/auth";
 const router = express.Router();
 
@@ -8,9 +8,8 @@ const router = express.Router();
 router
     .route("/")
     .get(getUsers);
-
 router.route('/me').get(auth, me);
-
+router.route("logout").get(logout);
 router
   .route('/auth/google')
   .get(passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -19,7 +18,7 @@ router.route('/auth/google/callback').get(
   passport.authenticate('google', {
     failureRedirect: "/",
   }),
-  async (req:any, res:any) => {
+  async (req:Request | any, res:Request|any) => {
     //   console.log(req);
     const user = req.user;
     try {
@@ -30,7 +29,8 @@ router.route('/auth/google/callback').get(
       return res
     //   .cookie("x_auth","userToken")
       .cookie("x_auth",userToken)
-      .redirect("/");
+      .redirect("/users/me");
+    //   .redirect("http://localhost:3001/");
     
     } catch (err) {
       return res.json({ loginSuccess: false, err });

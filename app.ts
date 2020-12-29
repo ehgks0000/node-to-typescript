@@ -11,6 +11,7 @@ import passport from "passport";
 const passportConfig = require('./lib/passport');
 
 import userRouter from "./routes/users";
+import memoRouter from "./routes/memos";
 const port = process.env.NODE_ENV === "production" ? process.env.PORT : 8000;
 
 const app:Application = express();
@@ -54,10 +55,14 @@ app.get("/", (req:Request, res:Response, next:NextFunction)=>{
     <li><a href="${process.env.CLIENT_URL}:${port}/users/auth/naver">/users/auth/naver</a></li>
     <li><a href="${process.env.CLIENT_URL}:${port}/users/auth/kakao">/users/auth/kakao</a></li>
     <li><a href="${process.env.CLIENT_URL}:${port}/users/me">/users/me</a></li>
+
+    <li><a href="${process.env.CLIENT_URL}:${port}/memos/getMemo">/memos/getMemo</a></li>
+    <li><a href="${process.env.CLIENT_URL}:${port}/memos/getMemobyId">/usememosrs/getMemobyId</a></li>
     `);
 
 })
 app.use("/users", userRouter);
+app.use("/memos", memoRouter);
 
 app.listen(port,()=>{
     console.log(`start typescript server ${port}`);
