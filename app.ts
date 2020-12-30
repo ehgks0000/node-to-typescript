@@ -37,6 +37,7 @@ app.use(
       secret: process.env.EXPRESS_SESSION!,
       resave: false,
       saveUninitialized: true,
+      
     }),
   );
   //-----------------------------------------------
@@ -64,6 +65,7 @@ app.get("/", (req:Request, res:Response, next:NextFunction)=>{
 app.use("/users", userRouter);
 app.use("/memos", memoRouter);
 
+//-------------------------------------------------------------------------------
 app.listen(port,()=>{
     console.log(`start typescript server ${port}`);
 })

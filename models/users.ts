@@ -1,10 +1,11 @@
-import mongoose, {Schema, Document, model, Model, Types} from "mongoose";
+import mongoose, {Schema, Document, model, Model, Types, DocumentToObjectOptions} from "mongoose";
 import jwt from "jsonwebtoken";
-type ID = Types.ObjectId;
+// type ID = Types.ObjectId;
 
 interface IUser {
     email: string;
     name: string;
+    // _id:Schema.Types.ObjectId;
     googleId?: string;
     naverId?: string;
     kakaoId?: string;
@@ -13,14 +14,12 @@ interface IUser {
 }
 
 interface IUserDoc extends IUser, Document{ // methods
-    generateToken : (secret_key:string, expiresTime:string)=> Promise<string>
+    generateToken : (secret_key:string, expiresTime:string)=> Promise<string>;
+    // toJSON : () => Promise<any>;
 }
 interface IUserModel extends Model<IUserDoc>{ // statics
     findByToken : (token:string, secret_key:any) => Promise<void>
 }
-// generateToken(secret_key:string, expiresTime:string): Promise<string>
-// findByToken(token:string, secret_key:any) : Promise<void>
-
 const userSchema :Schema = new Schema({
     email:{
         type: String,
@@ -61,7 +60,20 @@ userSchema.virtual('memos', {
     localField: '_id',
     foreignField: 'userId',
   });
+  //왜 유저 json에 memos가 안나올까? js에서는 잘되는데
+// userSchema.set('toObject', { virtuals: true });
+// userSchema.set('toJSON', { virtuals: true });
 
+userSchema.methods.toJSON = function () {
+    const user = this;
+    const userObject = user.toObject({virtual: true});
+  
+    // delete userObject.password;
+    // delete userObject.tokens;
+    // delete userObject.avatar;
+  
+    return userObject;
+  };
 
 userSchema.methods.generateToken = async function (secret_key:string, expiresTime:string) : Promise<string>{
     // 첫번째 파라미터는 토큰에 넣을 데이터, 두번째는 비밀 키, 세번째는 옵션, 네번째는 콜백함수

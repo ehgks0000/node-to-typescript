@@ -1,7 +1,8 @@
 import express, {Request, Response, NextFunction, request} from 'express';
 import passport from'passport';
-import {getUsers, me, logout} from "../controllers/users";
+import {getUsers, me, logout, logoutAll} from "../controllers/users";
 import auth from "../middleware/auth";
+// import {User, IUser} from "../models/users";
 const router = express.Router();
 
 
@@ -9,7 +10,8 @@ router
     .route("/")
     .get(getUsers);
 router.route('/me').get(auth, me);
-router.route("logout").get(logout);
+router.route("/logout").get(auth, logout);
+router.route("/logoutAll").get(auth, logoutAll);
 router
   .route('/auth/google')
   .get(passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -18,7 +20,7 @@ router.route('/auth/google/callback').get(
   passport.authenticate('google', {
     failureRedirect: "/",
   }),
-  async (req:Request | any, res:Request|any) => {
+  async (req:Request | any, res:Response) => {
     //   console.log(req);
     const user = req.user;
     try {

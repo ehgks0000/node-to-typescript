@@ -7,11 +7,13 @@ export const getMemo = async (req: Request | any, res: Response | any)=>{
     //     {
     //         [P in K]: Exclude<M[P], ID[] | ID>
     //     };
+    const user = req.user
     try {
-        await req.user.populate("memos").execPopulate();
+        // await user.populate("memos", "text userId").execPopulate();
+        await user.populate("memos").execPopulate();
         // await req.user.populate("memos") as Populated<IUserDoc, memos>;
         console.log("메모찾기 완료");
-        res.json(req.user.memos);
+        res.json(user.memos);
 
     } catch (e) {
         console.log("메모찾기 오류");
@@ -19,10 +21,11 @@ export const getMemo = async (req: Request | any, res: Response | any)=>{
     }
 }
 
-export const getMemobyId = async (req : Request | any, res:Response | any) => {
+export const getMemobyId = async (req : Request | any , res:Response | any) => {
     const _id = req.params.memoId;
+    const user = req.user
     try {
-      const memo = await Memo.findOne({ _id, userId: req.user._id });
+      const memo = await Memo.findOne({ _id, userId: user._id });
       // await memo.populate('userId').execPopulate();
       // memo.userId;
   
@@ -44,9 +47,10 @@ export const getMemobyId = async (req : Request | any, res:Response | any) => {
   export const writeMemo = async (req:Request | any, res:Response) => {
     //   const text = req.body.text;
     //   const memo = new Memo({ text: text });
-    console.log(req.user);
+    // console.log(req.user);
+    const user = req.user;
     try {
-      const memo = new Memo({ ...req.body, userId: req.user._id });
+      const memo = new Memo({ ...req.body, userId: user._id });
       memo
         .save()
         .then(() => {

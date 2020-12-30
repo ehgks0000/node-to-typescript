@@ -1,6 +1,5 @@
 import mongoose, {Schema, Document, model, Model, Types} from "mongoose";
 
-type ID = Types.ObjectId;
 // const memoSchema = new mongoose.Schema({
     // text: {
     //   type: String,
@@ -40,6 +39,8 @@ const memoSchemaFields: Record<keyof IMemo, any> = {
 
 const memoSchema = new Schema(memoSchemaFields);
 
+type ID = Types.ObjectId;
+
 interface IMemo {
     text: string;
     completed?: string;
@@ -54,13 +55,13 @@ interface IMemoDoc extends IMemo, Document{
 interface IMemoModel extends Model<IMemoDoc>{
 }
   
-  memoSchema.methods.createMemo = function (text:string) :void {
-    const memo = new this({
-      text: text,
-    });
-    memo.save();
-    // return memo.save();
-  };
+memoSchema.methods.createMemo = function (text:string) :void {
+   const memo = new this({
+     text: text,
+   });
+   memo.save();
+   // return memo.save();
+ };
 
 const Memo = model<IMemoDoc, IMemoModel>("Memo", memoSchema);
 
